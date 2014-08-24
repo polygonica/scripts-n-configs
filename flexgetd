@@ -5,6 +5,8 @@
 # but largely cribbed off examples
 # mail: matthew dot brandon dot arnold at gmail dot com
 #
+# flexget controls its own daemon fairly well, this is simply a script to start it on boot
+#
 # Add the following line /etc/rc.conf (or similar) to enable the flexget daemon at startup
 # flexgetd_enable="YES"
 
@@ -15,22 +17,21 @@
 
 . /etc/rc.subr
 
-name=flexgetd
-rcvar=flexgetd_enable
-
-command="/usr/local/bin/flexget"
-command_args="daemon start -d"
-
-# CHANGE THESE VARIABLES TO SUIT YOUR TASTES
-# yml_dir (str):		The directory of the flexget configuration and log files
-# flexgetd_user (str):	Set to user running flexget
-
-yml_dir="/media/tor/flexgetconfig/"
-pidfile="/var/run/${name}.pid"
+# CHANGE THIS VARIABLE
+# flexgetd_user (str): Set to user running flexget
 flexgetd_user="deluge"
 
-required_dirs=${yml_dir}
-required_files=${yml_dir}config.yml
+name=flexgetd
+
+rcvar=flexgetd_enable
+#pidfile="/var/run/${name}.pid" #run detection doesn't seem to work
+
+required_dirs=/home/${flexgetd_user}/.flexget/
+required_files=/home/${flexgetd_user}/.flexget/config.yml
+
+#command_interpreter="/usr/local/bin/python" #run detection doesn't seem to work
+command="/usr/local/bin/flexget"
+command_args="-c /home/${flexgetd_user}/.flexget/config.yml daemon start -d"
 
 load_rc_config $name
 run_rc_command "$1"
