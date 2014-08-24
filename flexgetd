@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# flexget RCng startup script
+# created by Matthew Arnold
+# but largely cribbed off examples
+# mail: matthew dot brandon dot arnold at gmail dot com
+#
+# Add the following line /etc/rc.conf (or similar) to enable the flexget daemon at startup
+# flexgetd_enable="YES"
+
+# PROVIDE: flexgetd
+# REQUIRE: NETWORKING FILESYSTEMS SERVERS DAEMON ldconfig resolv
+# BEFORE: LOGIN
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name=flexgetd
+rcvar=flexgetd_enable
+
+command="/usr/local/bin/flexget"
+command_args="daemon start -d"
+
+# CHANGE THESE VARIABLES TO SUIT YOUR TASTES
+# yml_dir (str):		The directory of the flexget configuration and log files
+# flexgetd_user (str):	Set to user running flexget
+
+yml_dir="/media/tor/flexgetconfig/"
+pidfile="/var/run/${name}.pid"
+flexgetd_user="deluge"
+
+required_dirs=${yml_dir}
+required_files=${yml_dir}config.yml
+
+load_rc_config $name
+run_rc_command "$1"
